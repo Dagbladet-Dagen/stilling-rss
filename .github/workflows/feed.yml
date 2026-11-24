@@ -1,0 +1,53 @@
+name: Feed
+
+# The newsletter goes out Friday 09:00 Oslo time, and MAKE may build it up
+# to two hours before. Every night, plus Friday early morning so ads
+# published Thursday evening are in. Cron is UTC; Oslo is UTC+1 in winter
+# and UTC+2 in summer, so 05:00 UTC is 06:00 or 07:00 there.
+on:
+  schedule:
+    - cron: "0 23 * * *"
+    - cron: "0 5 * * 5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: feed
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}stillinger.xml
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the feed
+        run: python3 rss-feed.py --self https://dagbladet-dagen.github.io/stilling-rss/stillinger.xml
+
+      # Committing when the ads change keeps a history, and keeps the repo
+      # active: GitHub disables schedules after 60 days without activity.
+      - name: Commit if the ads changed
+        run: |
+          if git diff --quiet -I '<lastBuildDate>' -- site/stillinger.xml; then
+            echo "No change in the ads."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add site/stillinger.xml
+            git commit -m "Feed: $(grep -c '<item>' site/stillinger.xml) ads"
+            git push
+          fi
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
