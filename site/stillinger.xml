@@ -5,7 +5,7 @@
     <link>https://stilling.dagen.no/</link>
     <description>Ledige stillinger på stilling.dagen.no</description>
     <language>nb</language>
-    <lastBuildDate>Tue, 24 Nov 2026 10:28:39 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 24 Nov 2026 10:30:10 +0000</lastBuildDate>
     <atom:link href="https://dagbladet-dagen.github.io/stilling-rss/stillinger.xml" rel="self" type="application/rss+xml" />
     <item>
       <title><![CDATA[Kokk/kokekyndig person]]></title>
@@ -116,8 +116,8 @@
       <nl:extra1>https://images.squarespace-cdn.com/content/v1/5bc6f0e3f8135a16b1e8be69/5eb7fe42-2394-4889-8aee-786436775179/FHBS+-+Logo+-+Horisontal+-+XStor.png?format=500w</nl:extra1>
       <nl:extra2><![CDATA[04.12.2026]]></nl:extra2>
       <nl:extra3><![CDATA[Tromsø]]></nl:extra3>
-      <nl:extra4><![CDATA[100%]]></nl:extra4>
-      <nl:extra5><![CDATA[Fast]]></nl:extra5>
+      <nl:extra4><![CDATA[]]></nl:extra4>
+      <nl:extra5><![CDATA[]]></nl:extra5>
     </item>
     <item>
       <title><![CDATA[Pastor]]></title>
@@ -162,10 +162,10 @@
       <enclosure url="https://image.dagen.no/1668914.jpg?imageId=1668914&amp;panoy=0&amp;panox=0&amp;panow=100&amp;panoh=100&amp;heighty=0&amp;heightx=0&amp;heightw=100&amp;heighth=100&amp;width=1200&amp;height=675&amp;format=jpg" length="0" type="image/jpeg" />
       <media:content url="https://image.dagen.no/1668914.jpg?imageId=1668914&amp;panoy=0&amp;panox=0&amp;panow=100&amp;panoh=100&amp;heighty=0&amp;heightx=0&amp;heightw=100&amp;heighth=100&amp;width=1200&amp;height=675&amp;format=jpg" medium="image" type="image/jpeg" width="1200" height="675"><media:title><![CDATA[]]></media:title></media:content>
       <nl:extra1>https://olavsborgkristneskole.no/wp-content/uploads/2024/06/logo3.png</nl:extra1>
-      <nl:extra2><![CDATA[Snarest]]></nl:extra2>
+      <nl:extra2><![CDATA[30.11.2026]]></nl:extra2>
       <nl:extra3><![CDATA[Sarpsborg]]></nl:extra3>
-      <nl:extra4><![CDATA[52 %]]></nl:extra4>
-      <nl:extra5><![CDATA[Vikariat]]></nl:extra5>
+      <nl:extra4><![CDATA[]]></nl:extra4>
+      <nl:extra5><![CDATA[]]></nl:extra5>
     </item>
   </channel>
 </rss>
