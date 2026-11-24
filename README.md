@@ -15,7 +15,10 @@ for the weekly newsletter in MAKE (make.as).
 and spacing are set in MAKE. `kort-venstre.html` and `kort-hoyre.html`
 are the two columns of a 2-per-row RSS row (MAKE stacks them on mobile),
 `fullbredde.html` is 1 ad full width, `liste-rad.html` 1 older ad as a
-slim line. `preview.py` fills them from the feeds:
+slim line. Those show on desktop; on mobile MAKE shows the `*-mobil.html`
+versions instead (`kort-mobil.html` is a compact card, 1 per row), which
+have their 16 px side margin built in. Previews:
+https://dagbladet-dagen.github.io/stilling-rss/preview-mobil.html `preview.py` fills them from the feeds:
 https://dagbladet-dagen.github.io/stilling-rss/preview.html
 
 `rss-feed.py` reads the ads from Labrador's public API and each ad's page,
