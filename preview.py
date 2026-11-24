@@ -96,17 +96,20 @@ def main() -> None:
     (ROOT / "site" / "preview.html").write_text(page, encoding="utf-8")
     print("-> site/preview.html")
 
-    # The mobile versions, at phone width. Their side margin is built in.
+    # The mobile versions, at phone width, with the 16 px side margin set in MAKE.
     def mheading(text: str) -> str:
         return heading(text).replace("padding:24px 20px 14px 20px", "padding:24px 16px 12px 16px")
     gap = '<div style="height:8px"></div>'
+
+    def m(inner: str) -> str:
+        return f'<div style="padding:0 16px;">{inner}</div>'
     mobile = [
         mheading("Nye denne uken"),
-        *(row("kort-mobil.html", new, i) + gap for i in range(min(4, len(new)))),
+        *(m(row("kort-mobil.html", new, i)) + gap for i in range(min(4, len(new)))),
         mheading("Ledige stillinger hos " + html.escape(featured[0]["AUTHOR"] if featured else "")),
-        row("fullbredde-mobil.html", featured, 0),
+        m(row("fullbredde-mobil.html", featured, 0)),
         mheading("Fikk du med deg disse?"),
-        *(row("liste-rad-mobil.html", older, i) + gap for i in range(min(5, len(older)))),
+        *(m(row("liste-rad-mobil.html", older, i)) + gap for i in range(min(5, len(older)))),
         '<div style="height:16px"></div>',
     ]
     page = page.split("<div style=\"max-width:600px")[0] + (
