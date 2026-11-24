@@ -5,7 +5,7 @@
     <link>https://stilling.dagen.no/</link>
     <description>Alle aktive stillinger, nyeste først, med publiseringsdato</description>
     <language>nb</language>
-    <lastBuildDate>Tue, 24 Nov 2026 11:31:15 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 24 Nov 2026 12:01:10 +0000</lastBuildDate>
     <atom:link href="https://dagbladet-dagen.github.io/stilling-rss/stillinger.xml" rel="self" type="application/rss+xml" />
     <item>
       <title><![CDATA[Kokk/kokekyndig person]]></title>
@@ -19,8 +19,8 @@
       <nl:extra1>https://dagen.labrador.media/_img/img.jpg?imageId=1686604&amp;width=640</nl:extra1>
       <nl:extra2><![CDATA[Frist 5. januar]]></nl:extra2>
       <nl:extra3><![CDATA[Møvik, Øygarden]]></nl:extra3>
-      <nl:extra4><![CDATA[]]></nl:extra4>
-      <nl:extra5><![CDATA[]]></nl:extra5>
+      <nl:extra4><![CDATA[20-50 %]]></nl:extra4>
+      <nl:extra5><![CDATA[Fast]]></nl:extra5>
     </item>
     <item>
       <title><![CDATA[Leder for regionarbeidet]]></title>
@@ -34,8 +34,8 @@
       <nl:extra1>https://cdn.sanity.io/images/c61knduu/production/1030c501c6a7be4e53cc523a14b7c1dc774f1e16-1910x355.png</nl:extra1>
       <nl:extra2><![CDATA[Frist 7. desember]]></nl:extra2>
       <nl:extra3><![CDATA[Bergen]]></nl:extra3>
-      <nl:extra4><![CDATA[]]></nl:extra4>
-      <nl:extra5><![CDATA[]]></nl:extra5>
+      <nl:extra4><![CDATA[100 %]]></nl:extra4>
+      <nl:extra5><![CDATA[Fast]]></nl:extra5>
     </item>
     <item>
       <title><![CDATA[Pastor]]></title>
@@ -49,8 +49,8 @@
       <nl:extra1>https://images.squarespace-cdn.com/content/v1/5bd2bf147eb88c4e77e84a05/1545321421265-3K0VK1M7BJWM75V2I08J/favicon.ico</nl:extra1>
       <nl:extra2><![CDATA[Frist 6. desember]]></nl:extra2>
       <nl:extra3><![CDATA[Porsgrunn]]></nl:extra3>
-      <nl:extra4><![CDATA[]]></nl:extra4>
-      <nl:extra5><![CDATA[]]></nl:extra5>
+      <nl:extra4><![CDATA[100 %]]></nl:extra4>
+      <nl:extra5><![CDATA[Fast]]></nl:extra5>
     </item>
     <item>
       <title><![CDATA[Journalist]]></title>
@@ -109,8 +109,8 @@
       <nl:extra1>https://images.squarespace-cdn.com/content/v1/5bc6f0e3f8135a16b1e8be69/5eb7fe42-2394-4889-8aee-786436775179/FHBS+-+Logo+-+Horisontal+-+XStor.png?format=500w</nl:extra1>
       <nl:extra2><![CDATA[Frist 4. desember]]></nl:extra2>
       <nl:extra3><![CDATA[Tromsø]]></nl:extra3>
-      <nl:extra4><![CDATA[]]></nl:extra4>
-      <nl:extra5><![CDATA[]]></nl:extra5>
+      <nl:extra4><![CDATA[100%]]></nl:extra4>
+      <nl:extra5><![CDATA[Fast]]></nl:extra5>
     </item>
     <item>
       <title><![CDATA[Pastor]]></title>
@@ -124,8 +124,8 @@
       <nl:extra1>https://dagen.labrador.media/_img/1682535.jpg?imageId=1682535&amp;width=214&amp;height=192&amp;format=jpg</nl:extra1>
       <nl:extra2><![CDATA[Frist 30. november]]></nl:extra2>
       <nl:extra3><![CDATA[Konsmo, Lyngdal]]></nl:extra3>
-      <nl:extra4><![CDATA[]]></nl:extra4>
-      <nl:extra5><![CDATA[]]></nl:extra5>
+      <nl:extra4><![CDATA[50 %]]></nl:extra4>
+      <nl:extra5><![CDATA[Fast]]></nl:extra5>
     </item>
     <item>
       <title><![CDATA[Vil du jobbe hos oss?]]></title>
@@ -152,10 +152,10 @@
       <enclosure url="https://image.dagen.no/1668914.jpg?imageId=1668914&amp;panoy=0&amp;panox=0&amp;panow=100&amp;panoh=100&amp;heighty=0&amp;heightx=0&amp;heightw=100&amp;heighth=100&amp;width=1200&amp;height=675&amp;format=jpg" length="0" type="image/jpeg" />
       <media:content url="https://image.dagen.no/1668914.jpg?imageId=1668914&amp;panoy=0&amp;panox=0&amp;panow=100&amp;panoh=100&amp;heighty=0&amp;heightx=0&amp;heightw=100&amp;heighth=100&amp;width=1200&amp;height=675&amp;format=jpg" medium="image" type="image/jpeg" width="1200" height="675"><media:title><![CDATA[]]></media:title></media:content>
       <nl:extra1>https://olavsborgkristneskole.no/wp-content/uploads/2024/06/logo3.png</nl:extra1>
-      <nl:extra2><![CDATA[Frist 30. november]]></nl:extra2>
+      <nl:extra2><![CDATA[Frist snarest]]></nl:extra2>
       <nl:extra3><![CDATA[Sarpsborg]]></nl:extra3>
-      <nl:extra4><![CDATA[]]></nl:extra4>
-      <nl:extra5><![CDATA[]]></nl:extra5>
+      <nl:extra4><![CDATA[52 %]]></nl:extra4>
+      <nl:extra5><![CDATA[Vikariat]]></nl:extra5>
     </item>
   </channel>
 </rss>

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Fills the MAKE row designs in make/ from the feeds in site/, the way MAKE
 does, and writes site/preview.html: a rough look at the newsletter before
-it is set up in MAKE. Header, intro and footer here are stand-ins; MAKE's
-own blocks replace them.
+it is set up in MAKE. Header, intro, headings, background and spacing here
+are stand-ins for what is set in MAKE, and the two columns stack below
+480 px as MAKE's do.
 
     python3 rss-feed.py && python3 preview.py
 """
@@ -42,6 +43,17 @@ def row(design: str, feed: list[dict], offset: int) -> str:
     return re.sub(r"\{\{RSS_ITEM(\d)_([A-Z0-9_]+)\}\}", fill, src)
 
 
+def block(inner: str, bottom: int = 16) -> str:
+    return f'<div style="padding:0 20px {bottom}px 20px;">{inner}</div>'
+
+
+def pair(feed: list[dict], offset: int) -> str:
+    cell = 'style="flex:1 1 220px;min-width:0;"'
+    return block(f'<div style="display:flex;flex-wrap:wrap;gap:16px;">'
+                 f'<div {cell}>{row("kort-venstre.html", feed, offset)}</div>'
+                 f'<div {cell}>{row("kort-hoyre.html", feed, offset)}</div></div>')
+
+
 def heading(text: str) -> str:
     return (f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" '
             f'style="background-color:#F5F5F5;"><tr><td style="padding:24px 20px 14px 20px;">'
@@ -62,11 +74,13 @@ def main() -> None:
 <div style="font-size:15px;line-height:22px;color:#4A4247;margin-top:10px;">Nye stillinger denne uken i kristne organisasjoner, menigheter, skoler og bedrifter over hele landet.</div>
 </td></tr></table>''',
         heading("Nye denne uken"),
-        row("to-per-rad.html", new, 0),
-        row("to-per-rad.html", new, 2),
-        row("fullbredde.html", featured, 0),
-        row("liste-overskrift.html", older, 0),
-        *(row("liste-rad.html", older, i) for i in range(min(5, len(older)))),
+        pair(new, 0),
+        pair(new, 2),
+        '<div style="height:8px"></div>',
+        block(row("fullbredde.html", featured, 0)),
+        '<div style="height:8px"></div>',
+        block(row("liste-overskrift.html", older, 0), 0),
+        *(block(row("liste-rad.html", older, i), 0) for i in range(min(5, len(older)))),
         '<table role="presentation" width="100%" style="background:#F5F5F5;"><tr><td height="24"></td></tr></table>',
     ]
     page = f'''<!doctype html>
