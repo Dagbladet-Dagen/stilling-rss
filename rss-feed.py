@@ -18,7 +18,8 @@ picture. This one also carries the facts, in the elements MAKE reads
                             newest first; "Forskyv" skips the first N
     description             the ad's first paragraph (RSS_ITEM1_SUMMARY,
                             _SUMMARY_100, _SUMMARY_200)
-    author, dc:creator      employer, as the kicker (RSS_ITEM1_AUTHOR)
+    dc:creator              employer, as the kicker (RSS_ITEM1_AUTHOR;
+                            RSS <author> must be an e-mail address)
     enclosure, media:content  the ad's picture, JPEG, 16:9 (RSS_ITEM1_IMAGE)
     media:title             the picture's alt text
     category                the ad's tags, without "stillinger"
@@ -228,7 +229,6 @@ def item(ad: dict, f: dict, now: float, pub: datetime) -> str:
         f'<guid isPermaLink="false">{escape(SITE)}/a/{ad["id"]}</guid>',
         f"<pubDate>{format_datetime(pub)}</pubDate>",
         f"<description>{cdata(first_paragraph(ad))}</description>",
-        f"<author>{cdata(employer)}</author>",
         f"<dc:creator>{cdata(employer)}</dc:creator>",
     ]
     if img:

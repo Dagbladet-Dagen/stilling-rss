@@ -24,7 +24,7 @@ def items(feed: str) -> list[dict]:
     for it in ET.parse(ROOT / "site" / feed).getroot().iter("item"):
         enc = it.find("enclosure")
         d = {"TITLE": it.findtext("title"), "URL": it.findtext("link"),
-             "AUTHOR": it.findtext("author"), "SUMMARY": it.findtext("description"),
+             "AUTHOR": it.findtext("{http://purl.org/dc/elements/1.1/}creator"), "SUMMARY": it.findtext("description"),
              "IMAGE": enc.get("url") if enc is not None else ""}
         for n in range(1, 6):
             d[f"EXTRA{n}"] = it.findtext(f"{NL}extra{n}") or ""
