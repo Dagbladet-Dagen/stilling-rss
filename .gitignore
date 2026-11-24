@@ -1,4 +1,2 @@
-site/*
-!site/stillinger.xml
 __pycache__/
 .DS_Store

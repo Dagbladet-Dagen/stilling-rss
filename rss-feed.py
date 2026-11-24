@@ -23,7 +23,7 @@ picture. This one also carries the facts, in the elements MAKE reads
     media:title             the picture's alt text
     category                the ad's tags, without "stillinger"
     nl:extra1               employer's logo, JPEG, or empty
-    nl:extra2               application deadline, "05.01.2027" or "Løpende"
+    nl:extra2               "Frist 6. desember", "Frist snarest" or "Løpende"
     nl:extra3               place of work, as the subtitle
     nl:extra4               "20-50 %"
     nl:extra5               "Fast", "Vikariat" ...
@@ -36,9 +36,17 @@ hidefromfp_time and teaserKicker when an ad has none. Email clients don't all sh
 The nl: namespace URI is the one MAKE's article gives; check in MAKE that
 the extra fields come through before relying on them.
 
+Three feeds, because MAKE only takes items newer than its last run:
+
+    stillinger.xml  every active ad, pubDate = published: "Nye denne uken"
+    fremhevet.xml   open-ended ads ("Løpende"), pubDate = now: in every send
+    eldre.xml       ads published before the last Friday 09:00 send,
+                    shortest deadline first, pubDate = now minus a minute
+                    per place, so MAKE keeps that order: "Fikk du med deg disse?"
+
 Usage:
-    python3 rss-feed.py                  # -> site/stillinger.xml
-    python3 rss-feed.py --out feed.xml --self https://.../feed.xml
+    python3 rss-feed.py                  # -> site/*.xml
+    python3 rss-feed.py --base https://.../   # adds atom:link self
 """
 
 from __future__ import annotations
@@ -49,14 +57,15 @@ import re
 import subprocess
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 from email.utils import format_datetime
 from pathlib import Path
 from urllib.parse import quote
 from xml.sax.saxutils import escape, quoteattr
 
 ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "site" / "stillinger.xml"
+OUT = ROOT / "site"
 UA = "Mozilla/5.0 (compatible; dagen-stilling-feed)"
 SITE = "https://stilling.dagen.no"
 QUERY = "lab_site_id:6 AND section:stillinger"
@@ -159,13 +168,37 @@ def jpeg(url: str) -> str:
     return re.sub(r"(labrador\.media/_img/img)\.webp", r"\1.jpg", url)
 
 
+MONTHS = ["januar", "februar", "mars", "april", "mai", "juni", "juli",
+          "august", "september", "oktober", "november", "desember"]
+OSLO = ZoneInfo("Europe/Oslo")
+# The newsletter goes out Fridays at 09:00 Oslo time.
+SEND_WEEKDAY, SEND_HOUR = 4, 9
+
+
+def open_ended(ad: dict, now: float) -> bool:
+    return int(ad.get("hidefromfp_time") or 0) - now > OPEN_ENDED_DAYS * 86400
+
+
 def deadline(f: dict, ad: dict, now: float) -> str:
-    if f.get("soknadsfrist"):
-        return f["soknadsfrist"]
-    t = int(ad.get("hidefromfp_time") or 0)
-    if t - now > OPEN_ENDED_DAYS * 86400:
+    """Ready to print: "Frist 6. desember", "Frist snarest" or "Løpende"."""
+    raw = f.get("soknadsfrist", "")
+    m = re.fullmatch(r"(\d{1,2})\.(\d{1,2})\.(\d{4})", raw)
+    if m and 1 <= int(m.group(2)) <= 12:
+        return f"Frist {int(m.group(1))}. {MONTHS[int(m.group(2)) - 1]}"
+    if raw.lower().startswith("løpende") or (not raw and open_ended(ad, now)):
         return "Løpende"
-    return datetime.fromtimestamp(t, timezone.utc).astimezone().strftime("%d.%m.%Y")
+    if raw:
+        return "Frist " + raw[0].lower() + raw[1:]
+    d = datetime.fromtimestamp(int(ad["hidefromfp_time"]), OSLO)
+    return f"Frist {d.day}. {MONTHS[d.month - 1]}"
+
+
+def last_send(now: float) -> datetime:
+    """The most recent Friday 09:00 in Oslo, at or before now."""
+    local = datetime.fromtimestamp(now, OSLO)
+    day = local.date() - timedelta(days=(local.weekday() - SEND_WEEKDAY) % 7)
+    send = datetime(day.year, day.month, day.day, SEND_HOUR, tzinfo=OSLO)
+    return send if send <= local else send - timedelta(days=7)
 
 
 def tags(ad: dict) -> list[str]:
@@ -182,20 +215,18 @@ def cdata(s: str) -> str:
     return "<![CDATA[" + s.replace("]]>", "]]]]><![CDATA[>") + "]]>"
 
 
-def item(ad: dict, now: float) -> str:
+def item(ad: dict, f: dict, now: float, pub: datetime) -> str:
     link = (ad.get("siteDomain") or SITE) + (ad.get("published_url") or f"/a/{ad['id']}")
-    f = facts(fetch(link))
     # Kicker and subtitle first: the short forms the front's cards show.
     employer = clean(ad.get("kicker")) or f.get("arbeidsgiver", "")
     place = clean(ad.get("subtitle")) or f.get("arbeidssted", "")
     img = image_url(ad)
-    published = datetime.fromisoformat(ad["published"])
 
     lines = [
         f"<title>{cdata(clean(ad.get('title')))}</title>",
         f"<link>{escape(link)}</link>",
         f'<guid isPermaLink="false">{escape(SITE)}/a/{ad["id"]}</guid>',
-        f"<pubDate>{format_datetime(published)}</pubDate>",
+        f"<pubDate>{format_datetime(pub)}</pubDate>",
         f"<description>{cdata(first_paragraph(ad))}</description>",
         f"<author>{cdata(employer)}</author>",
         f"<dc:creator>{cdata(employer)}</dc:creator>",
@@ -219,40 +250,65 @@ def item(ad: dict, now: float) -> str:
     return "    <item>\n" + "".join(f"      {x}\n" for x in lines) + "    </item>\n"
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--out", type=Path, default=OUT)
-    ap.add_argument("--self", dest="self_url", help="the URL the feed is served at")
-    args = ap.parse_args()
-
-    now = time.time()
-    active = [a for a in ads() if int(a.get("hidefromfp_time") or 0) > now]
-    active.sort(key=lambda a: a.get("published") or "", reverse=True)
-    if not active:
-        # More likely an API hiccup than an empty site. Keeping the last feed
-        # is harmless: MAKE only takes items newer than its last run.
-        sys.exit("error: no active ads; nothing written")
-
+def write(path: Path, title: str, desc: str, items: list[str], base: str | None) -> None:
     xmlns = " ".join(f'xmlns:{k}="{v}"' for k, v in NS.items())
     head = [
         '<?xml version="1.0" encoding="utf-8"?>',
         f'<rss version="2.0" {xmlns}>',
         "  <channel>",
-        "    <title>Dagen Stilling: ledige stillinger</title>",
+        f"    <title>{escape(title)}</title>",
         f"    <link>{SITE}/</link>",
-        "    <description>Ledige stillinger på stilling.dagen.no</description>",
+        f"    <description>{escape(desc)}</description>",
         "    <language>nb</language>",
         f"    <lastBuildDate>{format_datetime(datetime.now(timezone.utc))}</lastBuildDate>",
     ]
-    if args.self_url:
-        head.append(f'    <atom:link href={quoteattr(args.self_url)} rel="self"'
+    if base:
+        head.append(f'    <atom:link href={quoteattr(base + path.name)} rel="self"'
                     ' type="application/rss+xml" />')
-    body = "".join(item(a, now) for a in active)
-    xml = "\n".join(head) + "\n" + body + "  </channel>\n</rss>\n"
+    path.write_text("\n".join(head) + "\n" + "".join(items) + "  </channel>\n</rss>\n",
+                    encoding="utf-8")
+    print(f"{len(items):3} ads -> {path}")
 
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(xml, encoding="utf-8")
-    print(f"{len(active)} ads -> {args.out}")
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap.add_argument("--out", type=Path, default=OUT, help="folder for the feeds")
+    ap.add_argument("--base", help="the URL the folder is served at, ending in /")
+    args = ap.parse_args()
+
+    now = time.time()
+    built = datetime.now(timezone.utc).replace(microsecond=0)
+    active = [a for a in ads() if int(a.get("hidefromfp_time") or 0) > now]
+    if not active:
+        # More likely an API hiccup than an empty site. Keeping the last feeds
+        # is harmless: MAKE only takes items newer than its last run.
+        sys.exit("error: no active ads; nothing written")
+    for a in active:
+        a["_f"] = facts(fetch((a.get("siteDomain") or SITE) +
+                              (a.get("published_url") or f"/a/{a['id']}")))
+        a["_pub"] = datetime.fromisoformat(a["published"])
+
+    def fresh(group: list[dict]) -> list[str]:
+        # Newer than any MAKE run, one minute apart, so MAKE keeps this order.
+        return [item(a, a["_f"], now, built - timedelta(minutes=i))
+                for i, a in enumerate(group)]
+
+    newest = sorted(active, key=lambda a: a["_pub"], reverse=True)
+    featured = [a for a in newest if open_ended(a, now)]
+    cutoff = last_send(now)
+    older = sorted((a for a in active
+                    if not open_ended(a, now) and a["_pub"] < cutoff),
+                   key=lambda a: (int(a["hidefromfp_time"]), -a["_pub"].timestamp()))
+
+    args.out.mkdir(parents=True, exist_ok=True)
+    write(args.out / "stillinger.xml", "Dagen Stilling: ledige stillinger",
+          "Alle aktive stillinger, nyeste først, med publiseringsdato",
+          [item(a, a["_f"], now, a["_pub"]) for a in newest], args.base)
+    write(args.out / "fremhevet.xml", "Dagen Stilling: løpende stillinger",
+          "Annonser uten fast frist, med i hver utsending", fresh(featured), args.base)
+    write(args.out / "eldre.xml", "Dagen Stilling: fikk du med deg disse?",
+          "Aktive stillinger fra før forrige nyhetsbrev, korteste frist først",
+          fresh(older), args.base)
     return 0
 
 

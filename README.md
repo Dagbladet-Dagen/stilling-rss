@@ -3,7 +3,18 @@
 An RSS feed of the active job ads on [stilling.dagen.no](https://stilling.dagen.no),
 for the weekly newsletter in MAKE (make.as).
 
-**Feed:** https://dagbladet-dagen.github.io/stilling-rss/stillinger.xml
+**Feeds** (base https://dagbladet-dagen.github.io/stilling-rss/):
+
+| Feed | Section | What |
+| --- | --- | --- |
+| `stillinger.xml` | Nye denne uken | every active ad, by publishing date |
+| `fremhevet.xml`  | Ledige stillinger hos … | open-ended ads, in every send |
+| `eldre.xml`      | Fikk du med deg disse? | ads from before the last send, shortest deadline first |
+
+**Row designs** for MAKE are in `make/`: `to-per-rad.html` (2 ads),
+`fullbredde.html` (1 ad with its heading), `liste-overskrift.html` and
+`liste-rad.html` (1 line per row). `preview.py` fills them from the feeds:
+https://dagbladet-dagen.github.io/stilling-rss/preview.html
 
 `rss-feed.py` reads the ads from Labrador's public API and each ad's page,
 and writes `site/stillinger.xml`. The workflow in `.github/workflows/feed.yml`
@@ -22,7 +33,7 @@ What each element holds, and how MAKE uses it, is at the top of
 | `RSS_ITEMn_SUMMARY`   | The ad's first paragraph       |
 | `RSS_ITEMn_IMAGE`     | The ad's picture, JPEG 16:9    |
 | `RSS_ITEMn_EXTRA1`    | Employer logo (URL)            |
-| `RSS_ITEMn_EXTRA2`    | Application deadline           |
+| `RSS_ITEMn_EXTRA2`    | "Frist 6. desember" / "Løpende" |
 | `RSS_ITEMn_EXTRA3`    | Place of work                  |
 | `RSS_ITEMn_EXTRA4`    | Percentage, e.g. "100 %"       |
 | `RSS_ITEMn_EXTRA5`    | Employment type, e.g. "Fast"   |
