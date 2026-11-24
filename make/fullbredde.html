@@ -1,36 +1,22 @@
-<!-- Dagen Stilling, MAKE RSS element: 1 ad, full width, with its own heading.
+<!-- Dagen Stilling, MAKE RSS element: 1 ad, full width.
      Feed: fremhevet.xml (open-ended ads, in every send). Antall 1.
-     No background or outer spacing: set those in MAKE. -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+     Heading, background and spacing are set in MAKE; for "Ledige
+     stillinger hos ..." the employer is {{RSS_ITEM1_AUTHOR}}. -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;background-color:#FFFFFF;border:1px solid #E4E0DF;border-radius:6px;border-collapse:separate;">
   <tr>
-    <td align="left" style="text-align:left;padding:0 0 14px 0;">
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td align="left" style="text-align:left;border-left:3px solid #C4151C;padding:0 0 0 10px;font-family:'Schibsted Grotesk',Helvetica,Arial,sans-serif;font-size:18px;line-height:22px;font-weight:700;color:#1A1618;">Ledige stillinger hos {{RSS_ITEM1_AUTHOR}}</td>
-        </tr>
-      </table>
+    <td style="padding:0;font-size:0;line-height:0;">
+      <a href="{{RSS_ITEM1_URL}}" target="_blank" style="text-decoration:none;"><img src="{{RSS_ITEM1_IMAGE}}" width="558" alt="" style="display:block;width:100%;max-width:100%;height:auto;border:0;border-radius:6px 6px 0 0;"></a>
     </td>
   </tr>
   <tr>
-    <td style="padding:0;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;background-color:#FFFFFF;border:1px solid #E4E0DF;border-radius:6px;border-collapse:separate;">
+    <td align="left" style="text-align:left;padding:14px;font-family:'Schibsted Grotesk',Helvetica,Arial,sans-serif;">
+      <a href="{{RSS_ITEM1_URL}}" target="_blank" style="text-decoration:none;"><img src="{{RSS_ITEM1_EXTRA1}}" height="30" alt="" style="display:block;height:30px;width:auto;max-width:200px;border:0;margin:0 0 10px 0;"></a>
+      <div style="font-size:12px;line-height:16px;color:#6F676B;margin:0 0 2px 0;">{{RSS_ITEM1_AUTHOR}}</div>
+      <a href="{{RSS_ITEM1_URL}}" target="_blank" style="font-size:16px;line-height:21px;font-weight:700;color:#1A1618;text-decoration:none;">{{RSS_ITEM1_TITLE}}</a>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;">
         <tr>
-          <td style="padding:0;font-size:0;line-height:0;">
-            <a href="{{RSS_ITEM1_URL}}" target="_blank" style="text-decoration:none;"><img src="{{RSS_ITEM1_IMAGE}}" width="558" alt="" style="display:block;width:100%;max-width:100%;height:auto;border:0;border-radius:6px 6px 0 0;"></a>
-          </td>
-        </tr>
-        <tr>
-          <td align="left" style="text-align:left;padding:14px;font-family:'Schibsted Grotesk',Helvetica,Arial,sans-serif;">
-            <a href="{{RSS_ITEM1_URL}}" target="_blank" style="text-decoration:none;"><img src="{{RSS_ITEM1_EXTRA1}}" height="30" alt="" style="display:block;height:30px;width:auto;max-width:200px;border:0;margin:0 0 10px 0;"></a>
-            <div style="font-size:12px;line-height:16px;color:#6F676B;margin:0 0 2px 0;">{{RSS_ITEM1_AUTHOR}}</div>
-            <a href="{{RSS_ITEM1_URL}}" target="_blank" style="font-size:16px;line-height:21px;font-weight:700;color:#1A1618;text-decoration:none;">{{RSS_ITEM1_TITLE}}</a>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;">
-              <tr>
-                <td valign="bottom" align="left" style="text-align:left;font-family:'Schibsted Grotesk',Helvetica,Arial,sans-serif;font-size:12px;line-height:16px;color:#6F676B;word-break:break-word;">&#128205; {{RSS_ITEM1_EXTRA3}}</td>
-                <td valign="bottom" align="right" style="text-align:right;font-family:'Schibsted Grotesk',Helvetica,Arial,sans-serif;font-size:12px;line-height:16px;font-weight:700;color:#1A1618;white-space:nowrap;padding-left:8px;">{{RSS_ITEM1_EXTRA2}}</td>
-              </tr>
-            </table>
-          </td>
+          <td valign="bottom" align="left" style="text-align:left;font-family:'Schibsted Grotesk',Helvetica,Arial,sans-serif;font-size:12px;line-height:16px;color:#6F676B;word-break:break-word;">&#128205; {{RSS_ITEM1_EXTRA3}}</td>
+          <td valign="bottom" align="right" style="text-align:right;font-family:'Schibsted Grotesk',Helvetica,Arial,sans-serif;font-size:12px;line-height:16px;font-weight:700;color:#1A1618;white-space:nowrap;padding-left:8px;">{{RSS_ITEM1_EXTRA2}}</td>
         </tr>
       </table>
     </td>

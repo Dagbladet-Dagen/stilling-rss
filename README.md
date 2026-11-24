@@ -11,11 +11,11 @@ for the weekly newsletter in MAKE (make.as).
 | `fremhevet.xml`  | Ledige stillinger hos … | open-ended ads, in every send |
 | `eldre.xml`      | Fikk du med deg disse? | ads from before the last send, shortest deadline first |
 
-**Elements** for MAKE are in `make/`, without background or outer spacing
-(set in MAKE): `kort-venstre.html` and `kort-hoyre.html` (the two columns
-of a 2-per-row RSS row; MAKE stacks them on mobile), `fullbredde.html`
-(1 ad with its heading), `liste-overskrift.html` and `liste-rad.html`
-(1 line per row). `preview.py` fills them from the feeds:
+**Elements** for MAKE are in `make/`: the ads only. Headings, background
+and spacing are set in MAKE. `kort-venstre.html` and `kort-hoyre.html`
+are the two columns of a 2-per-row RSS row (MAKE stacks them on mobile),
+`fullbredde.html` is 1 ad full width, `liste-rad.html` 1 older ad as a
+slim line. `preview.py` fills them from the feeds:
 https://dagbladet-dagen.github.io/stilling-rss/preview.html
 
 `rss-feed.py` reads the ads from Labrador's public API and each ad's page,

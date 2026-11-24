@@ -77,10 +77,11 @@ def main() -> None:
         pair(new, 0),
         pair(new, 2),
         '<div style="height:8px"></div>',
+        heading("Ledige stillinger hos " + html.escape(featured[0]["AUTHOR"] if featured else "")),
         block(row("fullbredde.html", featured, 0)),
         '<div style="height:8px"></div>',
-        block(row("liste-overskrift.html", older, 0), 0),
-        *(block(row("liste-rad.html", older, i), 0) for i in range(min(5, len(older)))),
+        heading("Fikk du med deg disse?"),
+        *(block(row("liste-rad.html", older, i), 8) for i in range(min(5, len(older)))),
         '<table role="presentation" width="100%" style="background:#F5F5F5;"><tr><td height="24"></td></tr></table>',
     ]
     page = f'''<!doctype html>
