@@ -39,7 +39,7 @@ the extra fields come through before relying on them.
 Three feeds. MAKE's "only new items" switch is off, because it holds for
 every feed in a send; the feeds do the choosing:
 
-    stillinger.xml  active ads published since 08:00 on the previous send's
+    stillinger.xml  active ads published since 05:00 on the previous send's
                     Friday, newest first: "Nye denne uken"
     fremhevet.xml   open-ended ads ("Løpende"), pubDate = now: in every send
     eldre.xml       every ad whose deadline is ahead, soonest first and
@@ -175,18 +175,18 @@ MONTHS = ["januar", "februar", "mars", "april", "mai", "juni", "juli",
 OSLO = ZoneInfo("Europe/Oslo")
 
 
-# The newsletter goes out Fridays at 12:00 Oslo time. MAKE's "only new
+# The newsletter goes out Fridays at 09:00 Oslo time. MAKE's "only new
 # items" switch applies to every feed in a send, and "Fikk du med deg
 # disse?" needs all items, so the switch is off and the feeds choose.
-# "Nye denne uken" starts at 08:00 on the previous send's Friday: before
-# that Friday's morning build (07:30 UTC is 08:30 or 09:30 in Oslo), so an
+# "Nye denne uken" starts at 05:00 on the previous send's Friday: before
+# that Friday's morning build (04:30 UTC is 05:30 or 06:30 in Oslo), so an
 # ad published after the build but before the send is not lost; it may show
 # two weeks running instead.
-SEND_WEEKDAY, SEND_HOUR, WINDOW_HOUR = 4, 12, 8
+SEND_WEEKDAY, SEND_HOUR, WINDOW_HOUR = 4, 9, 5
 
 
 def window_start(now: float) -> datetime:
-    """08:00 on the Friday a week before the next send."""
+    """05:00 on the Friday a week before the next send."""
     local = datetime.fromtimestamp(now, OSLO)
     day = local.date() + timedelta(days=(SEND_WEEKDAY - local.weekday()) % 7)
     send = datetime(day.year, day.month, day.day, SEND_HOUR, tzinfo=OSLO)

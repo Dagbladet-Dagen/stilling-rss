@@ -1,13 +1,13 @@
 name: Feed
 
-# The newsletter goes out Friday 12:00 Oslo time, and MAKE may build it up
-# to two hours before. Every night, plus Friday morning so ads published
-# by then are in. Cron is UTC and may start late; Oslo is UTC+1 in winter
-# and UTC+2 in summer, so 07:30 UTC is 08:30 or 09:30 there.
+# The newsletter goes out Friday 09:00 Oslo time, and MAKE may build it up
+# to two hours before. Every night, plus early Friday so ads published
+# overnight are in. Cron is UTC and may start late; Oslo is UTC+1 in winter
+# and UTC+2 in summer, so 04:30 UTC is 05:30 or 06:30 there.
 on:
   schedule:
     - cron: "0 23 * * *"
-    - cron: "30 7 * * 5"
+    - cron: "30 4 * * 5"
   workflow_dispatch:
 
 permissions:

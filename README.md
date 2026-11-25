@@ -7,7 +7,7 @@ for the weekly newsletter in MAKE (make.as).
 
 | Feed | Section | What |
 | --- | --- | --- |
-| `stillinger.xml` | Nye denne uken | ads published since 08:00 on the previous send's Friday, newest first |
+| `stillinger.xml` | Nye denne uken | ads published since 05:00 on the previous send's Friday, newest first |
 | `fremhevet.xml`  | Ledige stillinger hos … | open-ended ads, in every send |
 | `eldre.xml`      | Fikk du med deg disse? | every ad whose deadline is ahead, shortest first, open-ended last |
 
@@ -23,7 +23,7 @@ https://dagbladet-dagen.github.io/stilling-rss/preview.html
 
 `rss-feed.py` reads the ads from Labrador's public API and each ad's page,
 and writes `site/stillinger.xml`. The workflow in `.github/workflows/feed.yml`
-runs it every night and Friday morning (the newsletter goes out Friday 12:00) morning, commits the feed when the ads
+runs it every night and Friday morning (the newsletter goes out Friday 09:00) morning, commits the feed when the ads
 change, and publishes it with GitHub Pages. Run it by hand under
 Actions → Feed → Run workflow.
 
