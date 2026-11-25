@@ -39,11 +39,13 @@ the extra fields come through before relying on them.
 
 Three feeds, because MAKE only takes items newer than its last run:
 
-    stillinger.xml  every active ad, pubDate = published: "Nye denne uken"
+    stillinger.xml  every active ad, pubDate = published: "Nye denne uken".
+                    MAKE's recurring send keeps only those published since
+                    its last run, so the newsletter shows that week's ads
     fremhevet.xml   open-ended ads ("Løpende"), pubDate = now: in every send
-    eldre.xml       ads published before the last Friday 09:00 send,
-                    shortest deadline first, pubDate = now minus a minute
-                    per place, so MAKE keeps that order: "Fikk du med deg disse?"
+    eldre.xml       every ad whose deadline is ahead, soonest first and
+                    open-ended ones last; pubDate = now minus a minute per
+                    place, so MAKE keeps that order: "Fikk du med deg disse?"
 
 Usage:
     python3 rss-feed.py                  # -> site/*.xml
@@ -172,8 +174,6 @@ def jpeg(url: str) -> str:
 MONTHS = ["januar", "februar", "mars", "april", "mai", "juni", "juli",
           "august", "september", "oktober", "november", "desember"]
 OSLO = ZoneInfo("Europe/Oslo")
-# The newsletter goes out Fridays at 09:00 Oslo time.
-SEND_WEEKDAY, SEND_HOUR = 4, 9
 
 
 def open_ended(ad: dict, now: float) -> bool:
@@ -192,14 +192,6 @@ def deadline(f: dict, ad: dict, now: float) -> str:
         return "Frist " + raw[0].lower() + raw[1:]
     d = datetime.fromtimestamp(int(ad["hidefromfp_time"]), OSLO)
     return f"Frist {d.day}. {MONTHS[d.month - 1]}"
-
-
-def last_send(now: float) -> datetime:
-    """The most recent Friday 09:00 in Oslo, at or before now."""
-    local = datetime.fromtimestamp(now, OSLO)
-    day = local.date() - timedelta(days=(local.weekday() - SEND_WEEKDAY) % 7)
-    send = datetime(day.year, day.month, day.day, SEND_HOUR, tzinfo=OSLO)
-    return send if send <= local else send - timedelta(days=7)
 
 
 def tags(ad: dict) -> list[str]:
@@ -295,10 +287,10 @@ def main() -> int:
 
     newest = sorted(active, key=lambda a: a["_pub"], reverse=True)
     featured = [a for a in newest if open_ended(a, now)]
-    cutoff = last_send(now)
-    older = sorted((a for a in active
-                    if not open_ended(a, now) and a["_pub"] < cutoff),
-                   key=lambda a: (int(a["hidefromfp_time"]), -a["_pub"].timestamp()))
+    # Every ad whose deadline is ahead, soonest first; open-ended ones last.
+    older = sorted(active, key=lambda a: (open_ended(a, now),
+                                          int(a["hidefromfp_time"]),
+                                          -a["_pub"].timestamp()))
 
     args.out.mkdir(parents=True, exist_ok=True)
     write(args.out / "stillinger.xml", "Dagen Stilling: ledige stillinger",
@@ -307,7 +299,7 @@ def main() -> int:
     write(args.out / "fremhevet.xml", "Dagen Stilling: løpende stillinger",
           "Annonser uten fast frist, med i hver utsending", fresh(featured), args.base)
     write(args.out / "eldre.xml", "Dagen Stilling: fikk du med deg disse?",
-          "Aktive stillinger fra før forrige nyhetsbrev, korteste frist først",
+          "Alle aktive stillinger, korteste frist først",
           fresh(older), args.base)
     return 0
 

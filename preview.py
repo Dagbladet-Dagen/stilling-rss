@@ -105,7 +105,7 @@ def main() -> None:
         return f'<div style="padding:0 16px;">{inner}</div>'
     mobile = [
         mheading("Nye denne uken"),
-        *(m(row("kort-mobil.html", new, i)) + gap for i in range(min(4, len(new)))),
+        *(m(row("kort-stort-mobil.html", new, i)) + gap for i in range(min(4, len(new)))),
         mheading("Ledige stillinger hos " + html.escape(featured[0]["AUTHOR"] if featured else "")),
         m(row("fullbredde-mobil.html", featured, 0)),
         mheading("Fikk du med deg disse?"),

@@ -7,23 +7,23 @@ for the weekly newsletter in MAKE (make.as).
 
 | Feed | Section | What |
 | --- | --- | --- |
-| `stillinger.xml` | Nye denne uken | every active ad, by publishing date |
+| `stillinger.xml` | Nye denne uken | every active ad, by publishing date; MAKE keeps those published since its last send |
 | `fremhevet.xml`  | Ledige stillinger hos … | open-ended ads, in every send |
-| `eldre.xml`      | Fikk du med deg disse? | ads from before the last send, shortest deadline first |
+| `eldre.xml`      | Fikk du med deg disse? | every ad whose deadline is ahead, shortest first, open-ended last |
 
 **Elements** for MAKE are in `make/`: the ads only. Headings, background
 and spacing are set in MAKE. `kort-venstre.html` and `kort-hoyre.html`
 are the two columns of a 2-per-row RSS row (MAKE stacks them on mobile),
 `fullbredde.html` is 1 ad full width, `liste-rad.html` 1 older ad as a
 slim line. Those show on desktop; on mobile MAKE shows the `*-mobil.html`
-versions instead (`kort-mobil.html` is a compact card, 1 per row). No
+versions instead (`kort-stort-mobil.html` is the large card 1 per row, `kort-mobil.html` a compact alternative). No
 element has outer margins; MAKE sets them. Previews:
 https://dagbladet-dagen.github.io/stilling-rss/preview-mobil.html `preview.py` fills them from the feeds:
 https://dagbladet-dagen.github.io/stilling-rss/preview.html
 
 `rss-feed.py` reads the ads from Labrador's public API and each ad's page,
 and writes `site/stillinger.xml`. The workflow in `.github/workflows/feed.yml`
-runs it every night and early Friday morning, commits the feed when the ads
+runs it every night and Friday morning (the newsletter goes out Friday 12:00) morning, commits the feed when the ads
 change, and publishes it with GitHub Pages. Run it by hand under
 Actions → Feed → Run workflow.
 
