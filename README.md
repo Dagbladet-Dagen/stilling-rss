@@ -7,7 +7,7 @@ for the weekly newsletter in MAKE (make.as).
 
 | Feed | Section | What |
 | --- | --- | --- |
-| `stillinger.xml` | Nye denne uken | every active ad, by publishing date; MAKE keeps those published since its last send |
+| `stillinger.xml` | Nye denne uken | ads published since 08:00 on the previous send's Friday, newest first |
 | `fremhevet.xml`  | Ledige stillinger hos … | open-ended ads, in every send |
 | `eldre.xml`      | Fikk du med deg disse? | every ad whose deadline is ahead, shortest first, open-ended last |
 
@@ -43,8 +43,8 @@ What each element holds, and how MAKE uses it, is at the top of
 | `RSS_ITEMn_EXTRA4`    | Percentage, e.g. "100 %"       |
 | `RSS_ITEMn_EXTRA5`    | Employment type, e.g. "Fast"   |
 
-`pubDate` is when the ad was published, so a recurring send takes the ads
-published since the last one.
+MAKE's "only new items" switch must be **off**: it holds for every feed
+in a send, and the feeds already choose what each section shows.
 
 Everything here is public: the API, the ad pages and the feed. No tokens.
 The site's own code is in the private repo `Dagbladet-Dagen/stilling`.

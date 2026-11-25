@@ -13,9 +13,8 @@ picture. This one also carries the facts, in the elements MAKE reads
 
     title                   job title
     link, guid              the ad
-    pubDate                 when the ad was published. MAKE's recurring
-                            send takes the items newer than its last run,
-                            newest first; "Forskyv" skips the first N
+    pubDate                 when the ad was published (in stillinger.xml);
+                            MAKE lists newest first, "Forskyv" skips N
     description             the ad's first paragraph (RSS_ITEM1_SUMMARY,
                             _SUMMARY_100, _SUMMARY_200)
     dc:creator              employer, as the kicker (RSS_ITEM1_AUTHOR;
@@ -37,11 +36,11 @@ hidefromfp_time and teaserKicker when an ad has none. Email clients don't all sh
 The nl: namespace URI is the one MAKE's article gives; check in MAKE that
 the extra fields come through before relying on them.
 
-Three feeds, because MAKE only takes items newer than its last run:
+Three feeds. MAKE's "only new items" switch is off, because it holds for
+every feed in a send; the feeds do the choosing:
 
-    stillinger.xml  every active ad, pubDate = published: "Nye denne uken".
-                    MAKE's recurring send keeps only those published since
-                    its last run, so the newsletter shows that week's ads
+    stillinger.xml  active ads published since 08:00 on the previous send's
+                    Friday, newest first: "Nye denne uken"
     fremhevet.xml   open-ended ads ("Løpende"), pubDate = now: in every send
     eldre.xml       every ad whose deadline is ahead, soonest first and
                     open-ended ones last; pubDate = now minus a minute per
@@ -176,6 +175,27 @@ MONTHS = ["januar", "februar", "mars", "april", "mai", "juni", "juli",
 OSLO = ZoneInfo("Europe/Oslo")
 
 
+# The newsletter goes out Fridays at 12:00 Oslo time. MAKE's "only new
+# items" switch applies to every feed in a send, and "Fikk du med deg
+# disse?" needs all items, so the switch is off and the feeds choose.
+# "Nye denne uken" starts at 08:00 on the previous send's Friday: before
+# that Friday's morning build (07:30 UTC is 08:30 or 09:30 in Oslo), so an
+# ad published after the build but before the send is not lost; it may show
+# two weeks running instead.
+SEND_WEEKDAY, SEND_HOUR, WINDOW_HOUR = 4, 12, 8
+
+
+def window_start(now: float) -> datetime:
+    """08:00 on the Friday a week before the next send."""
+    local = datetime.fromtimestamp(now, OSLO)
+    day = local.date() + timedelta(days=(SEND_WEEKDAY - local.weekday()) % 7)
+    send = datetime(day.year, day.month, day.day, SEND_HOUR, tzinfo=OSLO)
+    if send <= local:
+        send += timedelta(days=7)
+    prev = send - timedelta(days=7)
+    return prev.replace(hour=WINDOW_HOUR)
+
+
 def open_ended(ad: dict, now: float) -> bool:
     return int(ad.get("hidefromfp_time") or 0) - now > OPEN_ENDED_DAYS * 86400
 
@@ -272,8 +292,7 @@ def main() -> int:
     built = datetime.now(timezone.utc).replace(microsecond=0)
     active = [a for a in ads() if int(a.get("hidefromfp_time") or 0) > now]
     if not active:
-        # More likely an API hiccup than an empty site. Keeping the last feeds
-        # is harmless: MAKE only takes items newer than its last run.
+        # More likely an API hiccup than an empty site: keep the last feeds.
         sys.exit("error: no active ads; nothing written")
     for a in active:
         a["_f"] = facts(fetch((a.get("siteDomain") or SITE) +
@@ -286,6 +305,8 @@ def main() -> int:
                 for i, a in enumerate(group)]
 
     newest = sorted(active, key=lambda a: a["_pub"], reverse=True)
+    since = window_start(now)
+    new = [a for a in newest if a["_pub"] >= since]
     featured = [a for a in newest if open_ended(a, now)]
     # Every ad whose deadline is ahead, soonest first; open-ended ones last.
     older = sorted(active, key=lambda a: (open_ended(a, now),
@@ -293,9 +314,9 @@ def main() -> int:
                                           -a["_pub"].timestamp()))
 
     args.out.mkdir(parents=True, exist_ok=True)
-    write(args.out / "stillinger.xml", "Dagen Stilling: ledige stillinger",
-          "Alle aktive stillinger, nyeste først, med publiseringsdato",
-          [item(a, a["_f"], now, a["_pub"]) for a in newest], args.base)
+    write(args.out / "stillinger.xml", "Dagen Stilling: nye stillinger",
+          f"Publisert siden {since:%d.%m.%Y kl. %H:%M}, nyeste først",
+          [item(a, a["_f"], now, a["_pub"]) for a in new], args.base)
     write(args.out / "fremhevet.xml", "Dagen Stilling: løpende stillinger",
           "Annonser uten fast frist, med i hver utsending", fresh(featured), args.base)
     write(args.out / "eldre.xml", "Dagen Stilling: fikk du med deg disse?",
